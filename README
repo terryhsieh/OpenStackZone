@@ -1,0 +1,9 @@
+terry.hsieh <terry.hsieh@delta.com.tw> 
+
+OSinstall.sh
+A simple OpenStack installer that allows you to install OpenStack either interactively by specifying options on the command line or automated as part of a bigger installation.
+
+OSconfig.sh
+Config OpenStack Zone for PDCM2
+
+Fork from Kevin Jackson <kevin@linuxservices.co.uk> https://twitter.com/#!/itarchitectkev irc.freenode.org: uksysadmin
