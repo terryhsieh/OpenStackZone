@@ -9,8 +9,6 @@ CODENAME=precise
 VERSION=12.04
 TARBALL=${DISTRO}-${VERSION}-server-cloudimg-${ARCH}.tar.gz
 
-TMPAREA=/tmp/__upload
-
 # Process Command Line
 while getopts a:p:t:C: opts
 do
@@ -43,17 +41,20 @@ fi
 
 
 
-mkdir -p ${TMPAREA}
+#mkdir -p ${TMPAREA}
 
-if [ ! -f ${TMPAREA}/${TARBALL} ]
+cd ..
+cd VMImages
+
+if [ ! -f "ubuntu-12.04-server-cloudimg-amd64.tar.gz" ]
 then
-	wget -O ${TMPAREA}/${TARBALL} http://uec-images.ubuntu.com/releases/${CODENAME}/release/${TARBALL}
+	wget http://uec-images.ubuntu.com/releases/${CODENAME}/release/${TARBALL}
 fi
 
-if [ -f ${TMPAREA}/${TARBALL} ]
+if [ -f "ubuntu-12.04-server-cloudimg-amd64.tar.gz" ]
 then
-	cd ${TMPAREA}
-	tar zxf ${TARBALL}
+
+	tar -zxvf ubuntu-12.04-server-cloudimg-amd64.tar.gz
 	DISTRO_IMAGE=$(ls *-${ARCH}.img)
 	DISTRO_KERNEL=$(ls *-${ARCH}-vmlinuz-virtual)
 
@@ -63,7 +64,7 @@ then
 
 	echo "${DISTRO} ${VERSION} ${ARCH} now available in Glance (${AMI})"
 
-	rm -f /tmp/__upload/*{.img,-vmlinuz-virtual,loader,floppy}
+	rm -f *{.img,-vmlinuz-virtual,loader,floppy,.files}
 else
 	echo "Tarball not found!"
 fi
