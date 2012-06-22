@@ -283,7 +283,7 @@ touch /var/log/nova/nova-install.log
 DEFAULT_ADMIN=demo
 DEFAULT_KEYSTONE_ADMIN_TOKEN=999888777666
 DEFAULT_NETWORK_SIZE=64
-DEFAULT_NUM_NETWORKS=1
+DEFAULT_NUM_NETWORKS=0
 DEFAULT_VMNET="10.0.0.0/8"
 DEFAULT_MYSQL_PASS="openstack"
 DEFAULT_PUBLIC_INTERFACE=eth1
@@ -641,7 +641,7 @@ case ${INSTALL} in
 esac
 
 #Ensure metadata server work property 
-kllall dnsmasq
+killall dnsmasq
 
 #Make sure start from beginning
 rm -rf /var/lib/glance/*

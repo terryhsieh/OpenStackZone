@@ -15,6 +15,11 @@ Syntax
     -T: Installation type: all (master+chunk) | master | chunk | client 
     -C: Cloud Controller Address (default is worked out from public interface IP)
     -F: The mounting point (folder) that use to mount moosefs 
+	
+    EXAMPLE:
+	Install master --> ./MFSconfig -T master
+	Install chunk  --> ./MFSconfig -T chunk -C master_ip
+        Mount MFS      --> ./MFSconfig -T client -F /tmp/test -C master_ip
 USAGE
 exit 1
 }
@@ -42,6 +47,13 @@ metadata_install() {
 }
 
 chunk_install() {
+	if [ -z ${MFSMASTER_ADDR} ]
+        then
+                echo 'No mfs master ip address'
+                usage
+                exit 0
+        fi
+
 	mknod /dev/sda b 8 0
 	mknod /dev/sdb b 8 16
 
@@ -90,7 +102,8 @@ EOF
 client_install(){
         if [ -z ${MFSMASTER_ADDR} ]
         then
-                echo 'no mfs master ip address'
+                echo 'No mfs master ip address'
+		usage
                 exit 0
         fi	
 
