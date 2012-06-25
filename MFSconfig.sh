@@ -53,49 +53,53 @@ chunk_install() {
                 usage
                 exit 0
         fi
+	
+	groupadd mfs
+        useradd -g mfs mfs
 
-	mknod /dev/sda b 8 0
-	mknod /dev/sdb b 8 16
-
-
-        mkfs -t ext4 /dev/sda << EOF
+	cp /etc/mfschunkserver.cfg.dist /etc/mfschunkserver.cfg
+	
+	if [ -f '/etc/mfshdd.cfg' ]
+        then
+                rm /etc/mfshdd.cfg
+        fi
+	
+	if [ -b "/dev/sda" ]
+	then
+		mknod /dev/sda b 8 0
+	        mkfs -t ext4 /dev/sda << EOF
 y
 EOF
-
-        mkfs -t ext4 /dev/sdb << EOF
-y
-EOF
-
 	umount /dev/sda
-	umount /dev/sdb
-
 	rm -rf /mnt/hd1
-	rm -rf /mnt/hd2
 
 	mkdir -p /mnt/hd1
-	mkdir -p /mnt/hd2
-
 	mount /dev/sda /mnt/hd1
-	mount /dev/sdb /mnt/hd2
-
-	groupadd mfs
-	useradd -g mfs mfs
 
 	chown -R mfs:mfs /mnt/hd1
-	chown -R mfs:mfs /mnt/hd2
-
-	if [ -f '/etc/mfshdd.cfg' ]
-	then
-        	rm /etc/mfshdd.cfg
+	echo "/mnt/hd1" >> /etc/mfshdd.cfg
 	fi
 
-	echo "/mnt/hd1" >> /etc/mfshdd.cfg
-	echo "/mnt/hd2" >> /etc/mfshdd.cfg
 
-	cp /etc/mfsexports.cfg.dist     /etc/mfsexports.cfg
-	
+	if [ -b "/dev/sdb" ]
+        then
+                mknod /dev/sdb b 8 16
+                mkfs -t ext4 /dev/sdb << EOF
+y
+EOF
+        umount /dev/sdb
+        rm -rf /mnt/hd2
+
+        mkdir -p /mnt/hd2
+        mount /dev/sdb /mnt/hd2
+
+        chown -R mfs:mfs /mnt/hd2
+	echo "/mnt/hd2" >> /etc/mfshdd.cfg
+        fi	
+
 	sed -i "s/`cat /etc/hosts|grep mfsmaster|awk '{print $0}'`"//g /etc/hosts	
 	echo "${MFSMASTER_ADDR} mfsmaster" >> /etc/hosts
+
 	/usr/sbin/mfschunkserver start
 }
 
