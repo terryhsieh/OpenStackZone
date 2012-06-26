@@ -132,6 +132,7 @@ cat > /etc/nova/nova.conf << EOF
 --novncproxy_base_url=http://${CC_ADDR}:6080/vnc_auto.html
 --vncserver_proxyclient_address=${my_ip}
 --vncserver_listen=${my_ip}
+--instances_path=/mnt/instances
 --my_ip=${my_ip}
 EOF
 
@@ -642,6 +643,10 @@ esac
 
 #Ensure metadata server work property 
 killall dnsmasq
+
+# time sync
+/etc/init.d/ntp stop > /dev/null 2>&1 >> ${LOGFILE}
+ntpdate 192.168.11.67 #the ip should be replaced with domain name of bootserver 
 
 #Make sure start from beginning
 rm -rf /var/lib/glance/*
