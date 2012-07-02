@@ -1,6 +1,7 @@
 from fabric.api import run,env
 
-env.hosts = ['192.168.11.15', '192.168.11.21','192.168.11.22']
+env.hosts = ['TPE1AA0115','TPE1AA0121','TPE1AA0122']
 def check_connection():
 	run("service ssh status")
 
+def 

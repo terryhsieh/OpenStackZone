@@ -14,12 +14,12 @@ Syntax
 
     -T: Installation type: all (master+chunk) | master | chunk | client 
     -C: Cloud Controller Address (default is worked out from public interface IP)
-    -F: The mounting point (folder) that use to mount moosefs 
+    -F: The mounting point (default: /mnt/instances) that use to mount moosefs 
 	
     EXAMPLE:
 	Install master --> ./MFSconfig -T master
-	Install chunk  --> ./MFSconfig -T chunk -C master_ip
-        Mount MFS      --> ./MFSconfig -T client -F /tmp/test -C master_ip
+	Install chunk  --> ./MFSconfig -T chunk -C master-ip-address
+        Mount MFS      --> ./MFSconfig -T client -C master-ip-address ( -F /mount/point )
 USAGE
 exit 1
 }
@@ -110,18 +110,22 @@ client_install(){
 		usage
                 exit 0
         fi	
-
-	if [ -d ${MOUNTING_POINT} ]
+	
+	
+	if [ -z ${MOUNTING_POINT} ]
 	then
-		mv ${MOUNTING_POINT} ${MOUNTING_POINT}~
+		MOUNTING_POINT="/mnt/instances"
 	fi
 
-	mkdir -p ${MOUNTING_POINT}
+	if [ ! -d ${MOUNTING_POINT} ]
+	then
+		mkdir -p ${MOUNTING_POINT}
+	fi
 
 	sed -i "s/`cat /etc/hosts|grep mfsmaster|awk '{print $0}'`"//g /etc/hosts
         echo "${MFSMASTER_ADDR} mfsmaster" >> /etc/hosts
 	
-	chown -R nova:nova ${MFSMASTER_ADDR}
+	chown -R nova:nova ${MOUNTING_POINT}
 
 	/usr/bin/mfsmount ${MOUNTING_POINT} -H mfsmaster
 }
@@ -144,7 +148,7 @@ do
         MFSMASTER_ADDR=${OPTARG}
         ;;
     F)
-	MOUNTING_POINT=${OPTARG}
+	MOUNTING_POINT=${OPTARG-'/mnt/instances'}
 	;;
     h)
         usage

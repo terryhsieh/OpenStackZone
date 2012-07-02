@@ -25,7 +25,7 @@ done
 #make service that using traditional init start procedule do not start at machine boot up 
 for m in rc2.d rc3.d rc4.d rc5.d
 do
-	for n in S20memcached S20novnc S20rabbitmq-server S91apache2
+	for n in S20memcached S20novnc S20rabbitmq-server S91apache2 S23ntp
 	do
 		if [ -f /etc/$m/$n ]
 		then

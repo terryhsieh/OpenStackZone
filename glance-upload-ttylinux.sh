@@ -1,7 +1,38 @@
-ADMIN='admin'
-PASSWORD='openstack'
-TENANT='demo'
-ENDPOINT='192.168.11.15'
+#ADMIN='admin'
+#PASSWORD='openstack'
+#TENANT='demo'
+#ENDPOINT='192.168.11.15'
+
+# Process Command Line
+while getopts a:p:t:C: opts
+do
+  case $opts in
+    a)
+        ADMIN=${OPTARG}
+        ;;
+    p)
+        PASSWORD=${OPTARG}
+        ;;
+    t)
+        TENANT=${OPTARG}
+        ;;
+    C)
+        ENDPOINT=${OPTARG}
+        ;;
+    *)
+        echo "Syntax: $(basename $0) -u USER -p KEYSTONE -t TENANT -C CONTROLLER_IP"
+        exit 1
+        ;;
+  esac
+done
+
+# You must supply the API endpoint
+if [[ ! $ENDPOINT ]]
+then
+        echo "Syntax: $(basename $0) -a admin -p PASSWORD -t TENANT -C CONTROLLER_IP"
+        exit 1
+fi
+
 
 cd ..
 cd VMImages
